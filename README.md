@@ -11,3 +11,4 @@ Second, run the developement server:
 ```bash
 npm run dev
 ```
+## Functionality Instructions:
