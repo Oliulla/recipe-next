@@ -17,5 +17,9 @@
 }
 
 body {
-  color: #0f0f0f
+  color: #0f0f0f;
+}
+
+a > span {
+  color: white;
 }

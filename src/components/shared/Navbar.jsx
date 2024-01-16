@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <Navbar
       fluid
-      className="border-b border-gray-600 shadow-lg bg-gray-400 text-white"
+      className="border-b border-gray-600 shadow-lg bg-gray-700 text-white"
     >
       <Navbar.Brand as={Link} href="/">
         <img

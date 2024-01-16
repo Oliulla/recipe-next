@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { SearchRecipe } from "./SearchRecipe";
+import { SearchRecipe } from "./__RecipeSearchField";
 import LastFiveRecipesInHome from "../shared/__LastFiveRecipesInHome";
 import UserSearchRecipeResult from "../shared/__UserSearchRecipeResult";
 
