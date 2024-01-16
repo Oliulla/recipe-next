@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { Navbar } from "flowbite-react";
+// import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname();
+
+
   return (
     <Navbar
       fluid
@@ -21,19 +26,44 @@ export default function Header() {
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/" active>
+        <Navbar.Link
+          className="text-white text-[1rem]"
+          as={Link}
+          href="/"
+          active={pathname === "/" || pathname === "/home"}
+        >
           Home
         </Navbar.Link>
-        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/all-recipes">
+        <Navbar.Link
+          className="text-white text-[1rem]"
+          as={Link}
+          href="/all-recipes"
+          active={pathname === "/all-recipes"}
+        >
           Recipes
         </Navbar.Link>
-        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/add-recipes">
+        <Navbar.Link
+          className="text-white text-[1rem]"
+          as={Link}
+          href="/add-recipes"
+          active={pathname === "/add-recipes"}
+        >
           Add Recipes
         </Navbar.Link>
-        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/about">
+        <Navbar.Link
+          className="text-white text-[1rem]"
+          as={Link}
+          href="/about"
+          active={pathname === "/about"}
+        >
           About
         </Navbar.Link>
-        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/blogs">
+        <Navbar.Link
+          className="text-white text-[1rem]"
+          as={Link}
+          href="/blogs"
+          active={pathname === "/blogs"}
+        >
           Blogs
         </Navbar.Link>
       </Navbar.Collapse>
