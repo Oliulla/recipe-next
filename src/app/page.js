@@ -1,7 +1,11 @@
-export default function Home() {
+'use client'
+
+import Home from "@/components/_oneTime/Home"
+
+export default function MainPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      
+    <main className="my-5 container p-6">
+      <Home />
     </main>
   )
 }
