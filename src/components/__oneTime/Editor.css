@@ -1,0 +1,7 @@
+.edtor {
+  width: 100%;
+}
+.__text_editor .ql-container.ql-snow {
+  border: 1px solid #ceabab;
+  min-height: 200px;
+}
