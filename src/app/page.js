@@ -1,6 +1,6 @@
 'use client'
 
-import Home from "@/components/_oneTime/Home"
+import Home from "@/components/__oneTime/Home"
 
 export default function MainPage() {
   return (
