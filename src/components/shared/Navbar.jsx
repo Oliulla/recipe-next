@@ -24,7 +24,7 @@ export default function Header() {
         <Navbar.Link className="text-white text-[1rem]" as={Link} href="/" active>
           Home
         </Navbar.Link>
-        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/recipes">
+        <Navbar.Link className="text-white text-[1rem]" as={Link} href="/all-recipes">
           Recipes
         </Navbar.Link>
         <Navbar.Link className="text-white text-[1rem]" as={Link} href="/add-recipes">

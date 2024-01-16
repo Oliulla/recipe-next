@@ -1,9 +1,14 @@
-'use client'
+"use client";
 
 import React from "react";
+import { SearchRecipe } from "./SearchRecipe";
 
 const Home = () => {
-  return <div>this is home</div>;
+  return (
+    <div>
+      <SearchRecipe />
+    </div>
+  );
 };
 
 export default Home;
