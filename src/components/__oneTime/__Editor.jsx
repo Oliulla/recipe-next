@@ -15,14 +15,14 @@ const modules = {
   ],
 };
 import "./Editor.css";
-export default function Editor({ inputValue, handleInputChange }) {
+export default function Editor({ editorValue, handleInputChange }) {
   return (
     <div className="__text_editor">
       <ReactQuill
         modules={modules}
         theme="snow"
-        className="block lg:w-9/12 w-full bg-gray-400"
-        value={inputValue?.instructions}
+        className="block w-full bg-gray-50 hover:bg-gray-100"
+        value={editorValue?.instructions}
         onChange={(e) => handleInputChange("instructions", e)}
         placeholder="Instructions goes here..."
       />

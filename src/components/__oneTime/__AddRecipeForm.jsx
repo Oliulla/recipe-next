@@ -326,7 +326,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FloatingLabel, Checkbox, Label } from "flowbite-react";
+import { FloatingLabel, Checkbox, Label, FileInput } from "flowbite-react";
 import Editor from "./__Editor";
 
 const AddRecipeForm = () => {
@@ -335,9 +335,10 @@ const AddRecipeForm = () => {
   const [ingredients, setIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState({});
   const [instructions, setInstructions] = useState("");
-  const [inputValue, setInputValue] = useState({
+  const [editorValue, setEditorValue] = useState({
     instructions: "",
   });
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     async function fetchIngredients() {
@@ -362,6 +363,20 @@ const AddRecipeForm = () => {
     }));
   };
 
+  const handleEditor = (eventKey, e) => {
+    setEditorValue((prevEditorValue) => ({
+      ...prevEditorValue,
+      [eventKey]: e,
+    }));
+    // Assuming instructions are directly updated in the state
+    setInstructions(e);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -376,15 +391,8 @@ const AddRecipeForm = () => {
       console.log("Recipe Title:", recipeTitle);
       console.log("Selected Ingredients:", selectedArr);
       console.log("Instructions:", instructions);
+      console.log("selected file:", selectedFile);
     }
-  };
-
-  const handleEditor = (eventKey, e) => {
-    setInputValue((prevInputValue) => ({
-      ...prevInputValue,
-      [eventKey]: e,
-    }));
-    setInstructions(e); // Assuming instructions are directly updated in the state
   };
 
   return (
@@ -402,7 +410,7 @@ const AddRecipeForm = () => {
                 <FloatingLabel
                   variant="standard"
                   label="Recipe Title"
-                  className="bg-inherit text-white"
+                  className="bg-inherit focus:text-white text-white"
                   value={recipeTitle}
                   onChange={(e) => setRecipeTitle(e.target.value)}
                   required
@@ -442,10 +450,58 @@ const AddRecipeForm = () => {
                   />
                 </div>
                 <Editor
-                  inputValue={inputValue}
+                  editorValue={editorValue}
                   handleInputChange={handleEditor}
                 />
               </div>
+
+              <>
+                <div className="flex w-full items-center justify-center">
+                  <Label
+                    htmlFor="dropzone-file"
+                    className="dark:hover:bg-bray-800 flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
+                    {/* ... (your existing label content) */}
+                    <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                      {/* Display the selected file name */}
+                      {selectedFile && (
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          Selected File: {selectedFile.name}
+                        </p>
+                      )}
+                      {/* ... (your existing label content) */}
+                      <svg
+                        className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLineJoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </div>
+
+                    <FileInput
+                      id="dropzone-file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </Label>
+                </div>
+              </>
               <button
                 type="submit"
                 className="bg-blue-500 text-white p-2 rounded"
