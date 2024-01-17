@@ -16,6 +16,13 @@ export default function HeaderNav({ user }) {
     router.push("/login");
   };
 
+  const handleRedirectToDashboar = async () => {
+    if (!user?.email || !user?.name) {
+      return;
+    }
+    router.push("/dashboard");
+  };
+
   // console.log(user);
 
   useEffect(() => {
@@ -30,7 +37,7 @@ export default function HeaderNav({ user }) {
     getUser();
   }, []);
 
-  console.log(currentLoginUser);
+  // console.log(currentLoginUser);
 
   return (
     <Navbar
@@ -93,8 +100,11 @@ export default function HeaderNav({ user }) {
             Login
           </button>
         ) : (
-          <div className={`flex items-center gap-x-2 mt-2 ml-2`}>
-            <button onClick={() => signOut()}>Sign out</button>
+          <div
+            onClick={handleRedirectToDashboar}
+            className={`flex items-center gap-x-2 mt-2 ml-2 cursor-pointer`}
+          >
+            {/* <button onClick={() => signOut()}>Sign out</button> */}
             <button className="flex lg:hidden">Profile</button>
             <img
               src={user?.image}
