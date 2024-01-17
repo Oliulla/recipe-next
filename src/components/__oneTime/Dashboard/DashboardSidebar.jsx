@@ -7,6 +7,7 @@ import { HiArrowSmRight } from "react-icons/hi";
 import { IoFastFoodSharp } from "react-icons/io5";
 import { FaUserAlt } from "react-icons/fa";
 import styles from "./Dashboard.module.css";
+import { signOut } from "next-auth/react";
 
 export function DashboardSidebar() {
   return (
@@ -42,6 +43,7 @@ export function DashboardSidebar() {
             as={Button}
             className="text-white w-full mt-8"
             icon={HiArrowSmRight}
+            onClick={() => signOut()}
           >
             Sign Out
           </Sidebar.Item>
