@@ -7,11 +7,14 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model recipe {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Recipe {
+  id           Int          @id @default(autoincrement())
+  title        String
+  instructions String
+  image        Bytes
+  ingredients  String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model user {

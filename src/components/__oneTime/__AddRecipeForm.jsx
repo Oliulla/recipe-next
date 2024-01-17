@@ -52,7 +52,7 @@ const AddRecipeForm = () => {
     setSelectedFile(file);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const selectedArr = Object.keys(selectedIngredients).filter(
@@ -65,12 +65,29 @@ const AddRecipeForm = () => {
     } else if (!instructions) {
       alert("Please write your recipe instructions");
       return;
-    } else {
-      // Start your code here
-      console.log("Recipe Title:", recipeTitle);
-      console.log("Selected Ingredients:", selectedArr);
-      console.log("Instructions:", instructions);
-      console.log("selected file:", selectedFile);
+    }
+    // Start your code here
+    // console.log("Recipe Title:", recipeTitle);
+    // console.log("Selected Ingredients:", selectedArr);
+    // console.log("Instructions:", instructions);
+    // console.log("selected file:", selectedFile);
+
+    try {
+      const data = new FormData();
+      data.set("file", selectedFile);
+      data.set("title", recipeTitle);
+      data.set("instructions", instructions);
+      data.set("ingredients", selectedArr);
+
+      const res = await fetch("/api/recipe", {
+        method: "POST",
+        body: data,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const __resdata = await res.json();
+      console.log(__resdata);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -170,9 +187,9 @@ const AddRecipeForm = () => {
                         <span className="font-semibold">Click to upload</span>{" "}
                         or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {/* <p className="text-xs text-gray-500 dark:text-gray-400">
                         SVG, PNG, JPG or GIF (MAX. 800x400px)
-                      </p>
+                      </p> */}
                     </div>
 
                     <FileInput
