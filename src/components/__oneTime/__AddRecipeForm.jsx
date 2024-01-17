@@ -85,7 +85,7 @@ const AddRecipeForm = () => {
       });
       if (!res.ok) throw new Error(await res.text());
       const __resdata = await res.json();
-      console.log(__resdata);
+      // console.log(__resdata);
     } catch (error) {
       console.log(error);
     }

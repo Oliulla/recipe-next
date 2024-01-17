@@ -49,3 +49,45 @@ export async function POST(request) {
         return NextResponse.json(result, { status: statusCode });
     }
 }
+
+export async function GET(request) {
+    let result = {};
+    let statusCode = 200;
+
+
+    // Extract email from query parameters
+    const email = request.nextUrl.searchParams.get("email")
+    // console.log(email)
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email: email },
+        });
+
+        if (!user) {
+            statusCode = 404;
+            result = {
+                status: false,
+                statusCode,
+                message: "User not found",
+            };
+        } else {
+            result = {
+                status: true,
+                statusCode,
+                message: "User found",
+                data: user,
+            };
+        }
+    } catch (error) {
+        statusCode = 500;
+        result = {
+            status: false,
+            statusCode,
+            message: "API error",
+        };
+    } finally {
+        await prisma.$disconnect();
+        return NextResponse.json(result, { status: statusCode });
+    }
+}

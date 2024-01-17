@@ -12,7 +12,7 @@ const Home = () => {
     setSearchValue(e.target.value);
   };
 
-  console.log(searchValue);
+  // console.log(searchValue);
   const userSearchRecipe = null;
 
   return (

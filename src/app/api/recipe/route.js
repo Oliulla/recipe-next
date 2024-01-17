@@ -12,7 +12,7 @@ export async function POST(request) {
     const instructions = data.get('instructions')
     const ingredients = data.get('ingredients')
 
-    console.log(file, title, instructions, ingredients)
+    // console.log(file, title, instructions, ingredients)
     try {
 
         if (!title || !instructions || !ingredients) {
