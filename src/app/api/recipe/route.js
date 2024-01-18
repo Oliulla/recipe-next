@@ -7,13 +7,18 @@ export async function POST(request) {
     let statusCode = 200;
 
     const data = await request.formData();
-    const file = data.get('file')
+    let file = data.get('file')
     const title = data.get('title')
     const instructions = data.get('instructions')
     const ingredients = data.get('ingredients')
     const userId = data.get('userId')
 
-    console.log(file, title, instructions, ingredients, userId)
+    // when file is null then file default BLOB value set when sqLite DB is not migrate properly
+    if (file === null) {
+        file = "default0blob0null0value"
+    }
+
+    // console.log(file, title, instructions, ingredients, userId)
     try {
 
         if (!title || !instructions || !ingredients) {

@@ -17,11 +17,11 @@ const modules = {
 import "./__Editor.css";
 export default function Editor({ editorValue, handleInputChange }) {
   return (
-    <div className="__text_editor">
+    <div className="__text_editor overflow-y-scroll">
       <ReactQuill
         modules={modules}
         theme="snow"
-        className="block w-full bg-gray-50 hover:bg-gray-100"
+        className="block w-full bg-gray-50 hover:bg-gray-100 overflow-y-scroll"
         value={editorValue?.instructions}
         onChange={(e) => handleInputChange("instructions", e)}
         placeholder="Instructions goes here..."

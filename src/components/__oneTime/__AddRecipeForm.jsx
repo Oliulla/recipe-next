@@ -107,16 +107,20 @@ const AddRecipeForm = ({ user }) => {
       // console.log(res);
       if (!res.ok) throw new Error(await res.text());
       const __resdata = await res.json();
-      console.log(__resdata);
+      // console.log(__resdata);
       if (__resdata.statusCode === 200) {
-        setSelectedIngredients({});
-        setSelectedFile(null);
-        setEditorValue(editorValue.instructions(""));
+        // Reset form fields after successful submission
         setRecipeTitle("");
-        toast(`${__resdata?.message}`);
+        setSelectedIngredients({});
+        setEditorValue({ instructions: "" });
+        setSelectedFile(null);
+
+        // Alert or display a success message
+        alert("Successfully Created Your Recipe");
       }
     } catch (error) {
-      toast("Ann error occured!");
+      // toast("Ann error occured!");
+      alert("Something went wrong to post recipe! Try again later!");
       console.log(error);
     }
   };
