@@ -70,28 +70,49 @@ export async function POST(request) {
 }
 
 
-export async function GET() {
+export async function GET(request) {
     let result = [];
     let statusCode = 200;
+
     try {
-        const recipes = await prisma.recipe.findMany();
-        result = {
+        const search = request.nextUrl.searchParams.get('search');
+        // console.log(search)
+
+        let recipes = await prisma.recipe.findMany();
+
+        // Searching by title or ingredients
+        if (search) {
+            const searchTerm = search.toLowerCase();
+            recipes = recipes.filter(
+                (recipe) =>
+                    recipe.title.toLowerCase().includes(searchTerm) ||
+                    recipe.ingredients.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        let responseData = {
             statusCode: statusCode,
-            message: "All Recipes",
+            message: "Recipes",
             data: recipes,
         };
-        statusCode = 200;
 
-    } catch (error) {
-        if (error) {
-            statusCode = 400;
-            result = {
-                statusCode: statusCode,
-                message: "API error",
-            }
+        const latestSixRecipe = request.nextUrl.searchParams.get("latestSixRecipe");
+
+        if (latestSixRecipe && latestSixRecipe.toLowerCase() === "true") {
+            // If latestSixRecipe is true, return the last six recipes
+            responseData.data = recipes.slice(-6);
         }
+
+        result = responseData;
+    } catch (error) {
+        statusCode = 400;
+        result = {
+            statusCode: statusCode,
+            message: "API error",
+        };
     } finally {
         await prisma.$disconnect();
-        return NextResponse.json(result, { status: statusCode },);
+        return NextResponse.json(result, { status: statusCode });
     }
 }
+
