@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { SearchRecipe } from "./__RecipeSearchField";
-import LastFiveRecipesInHome from "../shared/__LastFiveRecipesInHome";
 import UserSearchRecipeResult from "../shared/__UserSearchRecipeResult";
+import LatestSixRecipesInHome from "../shared/__LatestSixRecipesInHome";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -16,20 +16,20 @@ const Home = () => {
   const userSearchRecipe = null;
 
   return (
-    <div>
+    <div className="">
       <SearchRecipe
         handleSearchChange={handleSearchChange}
         searchValue={searchValue}
       />
-      <div>
+      <div className="flex justify-center w-full">
         {userSearchRecipe ? (
-          <>
+          <div>
             <UserSearchRecipeResult />
-          </>
+          </div>
         ) : (
-          <>
-            <LastFiveRecipesInHome />
-          </>
+          <div>
+            <LatestSixRecipesInHome />
+          </div>
         )}
       </div>
     </div>

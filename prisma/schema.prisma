@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Recipe {
-  id           Int        @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   title        String
   instructions String
-  image        Bytes
+  image        Bytes?
   ingredients  String
-  userId       Int        // Foreign key referencing User model
-  user         User       @relation(fields: [userId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  userId       Int // Foreign key referencing User model
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model User {

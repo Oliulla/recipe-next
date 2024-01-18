@@ -6,11 +6,11 @@ export async function POST(request) {
     let statusCode = 200;
 
     const data = await request.json();
+    // console.log(data)
 
     try {
         // By unique identifier
         const existingUser = await prisma.user.findUnique({ where: { email: data.email } })
-
 
         if (existingUser) {
             statusCode = 400;

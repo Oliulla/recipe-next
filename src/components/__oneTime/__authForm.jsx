@@ -1,5 +1,5 @@
 "use client";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { BsGoogle } from "react-icons/bs";
 import { Button, Spinner } from "flowbite-react";
@@ -15,7 +15,7 @@ export default function AuthForm({ user }) {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("user from authform-->", user)
+    console.log("user from authform-->", user);
     if (user?.email || user?.name) {
       router.push("/");
     }

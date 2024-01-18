@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { FloatingLabel, Checkbox, Label, FileInput } from "flowbite-react";
 import Editor from "./__Editor";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const AddRecipeForm = () => {
+const AddRecipeForm = ({ user }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [recipeTitle, setRecipeTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
@@ -14,8 +16,14 @@ const AddRecipeForm = () => {
     instructions: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
+    if (!user?.email) {
+      router.push("/login");
+    }
+
     async function fetchIngredients() {
       try {
         const response = await fetch("ingredients.json");
@@ -29,6 +37,18 @@ const AddRecipeForm = () => {
     }
 
     fetchIngredients();
+  }, []);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const res = await fetch(
+        `http://localhost:3000/api/users?email=${user?.email}`
+      );
+      const data = await res.json();
+      setUserId(data?.data?.id);
+    }
+
+    fetchCurrentUser();
   }, []);
 
   const handleCheckboxChange = (label) => {
@@ -78,15 +98,25 @@ const AddRecipeForm = () => {
       data.set("title", recipeTitle);
       data.set("instructions", instructions);
       data.set("ingredients", selectedArr);
+      data.set("userId", userId);
 
       const res = await fetch("/api/recipe", {
         method: "POST",
         body: data,
       });
+      // console.log(res);
       if (!res.ok) throw new Error(await res.text());
       const __resdata = await res.json();
-      // console.log(__resdata);
+      console.log(__resdata);
+      if (__resdata.statusCode === 200) {
+        setSelectedIngredients({});
+        setSelectedFile(null);
+        setEditorValue(editorValue.instructions(""));
+        setRecipeTitle("");
+        toast(`${__resdata?.message}`);
+      }
     } catch (error) {
+      toast("Ann error occured!");
       console.log(error);
     }
   };

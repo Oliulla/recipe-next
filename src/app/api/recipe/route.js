@@ -11,8 +11,9 @@ export async function POST(request) {
     const title = data.get('title')
     const instructions = data.get('instructions')
     const ingredients = data.get('ingredients')
+    const userId = data.get('userId')
 
-    // console.log(file, title, instructions, ingredients)
+    console.log(file, title, instructions, ingredients, userId)
     try {
 
         if (!title || !instructions || !ingredients) {
@@ -27,12 +28,19 @@ export async function POST(request) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         // console.log(buffer)
+        // const recipeData = JSON.stringify({
+        //     title: title,
+        //     ingredients: ingredients,
+        //     instructions: instructions,
+        //     image: buffer
+        // })
         const recipe = await prisma.recipe.create({
             data: {
                 title: title,
                 ingredients: ingredients,
                 instructions: instructions,
-                image: buffer
+                image: buffer,
+                userId: parseInt(userId)
             }
         });
 

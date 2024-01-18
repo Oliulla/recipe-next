@@ -14,7 +14,7 @@ const modules = {
     ["clean"],
   ],
 };
-import "./Editor.css";
+import "./__Editor.css";
 export default function Editor({ editorValue, handleInputChange }) {
   return (
     <div className="__text_editor">
