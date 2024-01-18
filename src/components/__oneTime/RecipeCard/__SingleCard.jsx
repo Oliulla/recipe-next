@@ -3,8 +3,9 @@ import Link from "next/link";
 import "./__singleCard.css";
 
 import { Card } from "flowbite-react";
+import { __dynamicRecipeCardContentDir } from "@/constants/constants";
 
-export function SingleCard({ recipe }) {
+export function SingleCard({ recipe, fromWhere }) {
   // Destructure the recipe data
   const { title, image } = recipe;
 
@@ -15,9 +16,13 @@ export function SingleCard({ recipe }) {
   return (
     <Link href={`/recipe-details/${recipe.id}`} className="block">
       <Card className="max-w-sm h-full" imgAlt={title} imgSrc={dataUri}>
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {title}
-        </h5>
+        {fromWhere === __dynamicRecipeCardContentDir.__MY_RECIPES ? (
+          "DASH"
+        ) : (
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {title}
+          </h5>
+        )}
       </Card>
     </Link>
   );
