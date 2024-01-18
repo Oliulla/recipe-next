@@ -18,7 +18,7 @@ export function DashboarMainPageComponent({ children, user }) {
       <aside>
         <DashboardSidebar />
       </aside>
-      <main className="flex-1 bg-gray-3 border border-gray-2  rounded-lg  max-h-screen overflow-auto pb-5 ">
+      <main className="flex-1 bg-gray-3 border border-gray-2 rounded-lg max-h-screen overflow-auto">
         {children}
       </main>
     </>

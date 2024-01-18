@@ -20,7 +20,7 @@ export default function HeaderNav({ user }) {
     if (!user?.email || !user?.name) {
       return;
     }
-    router.push("/dashboard");
+    router.push("/dashboard/me");
   };
 
   // console.log(user);

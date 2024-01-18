@@ -8,15 +8,18 @@ import { IoFastFoodSharp } from "react-icons/io5";
 import { FaUserAlt } from "react-icons/fa";
 import styles from "./Dashboard.module.css";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 export function DashboardSidebar() {
+  const pathname = usePathname();
+
   return (
     <Sidebar
       aria-label="Sidebar with logo branding example"
       className={styles.sidebar}
     >
       <Sidebar.Logo
-        href="/dashboard"
+        href="/dashboard/me"
         as={Link}
         img="faviconImg.png"
         imgAlt="NextRecipe"
@@ -26,16 +29,25 @@ export function DashboardSidebar() {
       <Sidebar.Items className="__sidebar_links">
         <Sidebar.ItemGroup className="__sidebar_link_ul">
           <Sidebar.Item
-            href="/dashboard/user"
+            href="/dashboard/me"
             icon={FaUserAlt}
-            className="hover:bg-gray-900"
+            className={`${
+              pathname === "/dashboard" || pathname === "/dashboard/me"
+                ? "hover:bg-gray-900 bg-gray-900"
+                : "hover:bg-gray-900 "
+            }`}
           >
             Profile
           </Sidebar.Item>
           <Sidebar.Item
             href="/dashboard/my-recipes"
             icon={IoFastFoodSharp}
-            className="my-4 hover:bg-gray-900"
+            className={`my-4 ${
+              pathname === "/dashboard/my-recipes" ||
+              pathname === "/dashboard/my-recipes"
+                ? "hover:bg-gray-900 bg-gray-900"
+                : "hover:bg-gray-900 "
+            }`}
           >
             Your Recipes
           </Sidebar.Item>
