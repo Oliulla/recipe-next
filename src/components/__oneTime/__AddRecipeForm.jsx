@@ -8,14 +8,17 @@ import { useRouter } from "next/navigation";
 
 const AddRecipeForm = ({ user }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [recipeTitle, setRecipeTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
+
+  const [recipeTitle, setRecipeTitle] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState({});
+  
   const [instructions, setInstructions] = useState("");
   const [editorValue, setEditorValue] = useState({
     instructions: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
+
   const [userId, setUserId] = useState(null);
   const router = useRouter();
 

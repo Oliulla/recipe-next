@@ -4,6 +4,8 @@ import "./__singleCard.css";
 
 import { Card } from "flowbite-react";
 import { __dynamicRecipeCardContentDir } from "@/constants/constants";
+import RecipeDeleteModal from "../__Me/__RecipeRelatedModals/__RecipeDeleteModal";
+import RecipeUpdateModal from "../__Me/__RecipeRelatedModals/__RecipeUpdateModal";
 
 export function SingleCard({ recipe, fromWhere }) {
   // Destructure the recipe data
@@ -14,16 +16,29 @@ export function SingleCard({ recipe, fromWhere }) {
   const dataUri = `data:image/jpeg;base64,${base64Image}`;
 
   return (
-    <Link href={`/recipe-details/${recipe.id}`} className="block">
-      <Card className="max-w-sm h-full" imgAlt={title} imgSrc={dataUri}>
-        {fromWhere === __dynamicRecipeCardContentDir.__MY_RECIPES ? (
-          "DASH"
-        ) : (
-          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {title}
-          </h5>
-        )}
-      </Card>
-    </Link>
+    <>
+      {fromWhere === __dynamicRecipeCardContentDir.__MY_RECIPES ? (
+        <>
+          <Card className="max-w-sm h-full" imgAlt={title} imgSrc={dataUri}>
+            <div className="flex justify-center gap-x-8">
+              <>
+                <RecipeDeleteModal recipeName={recipe.title} />
+              </>
+              <>
+                <RecipeUpdateModal recipe={recipe} />
+              </>
+            </div>
+          </Card>
+        </>
+      ) : (
+        <Link href={`/recipe-details/${recipe.id}`} className="block">
+          <Card className="max-w-sm h-full" imgAlt={title} imgSrc={dataUri}>
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {title}
+            </h5>
+          </Card>
+        </Link>
+      )}
+    </>
   );
 }

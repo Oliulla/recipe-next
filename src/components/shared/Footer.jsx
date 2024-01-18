@@ -20,7 +20,7 @@ const FooterComponent = () => {
               <Footer.Brand
                 href="/"
                 as={Link}
-                src="faviconImg.png"
+                src="http://localhost:3000/faviconImg.png"
                 alt="RecipeNext Logo"
                 name="RecipeNext"
                 className="text-white"

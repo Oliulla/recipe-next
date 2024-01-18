@@ -21,7 +21,7 @@ export function DashboardSidebar() {
       <Sidebar.Logo
         href="/dashboard/me"
         as={Link}
-        img="faviconImg.png"
+        img="http://localhost:3000/faviconImg.png"
         imgAlt="NextRecipe"
       >
         NextRecipe

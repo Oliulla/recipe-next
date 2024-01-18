@@ -46,7 +46,7 @@ export default function HeaderNav({ user }) {
     >
       <Navbar.Brand as={Link} href="/">
         <img
-          src="faviconImg.png"
+          src="http://localhost:3000/faviconImg.png"
           className="mr-3 h-6 sm:h-9"
           alt="RecipeNext Logo"
         />
