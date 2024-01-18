@@ -1,10 +1,12 @@
 import { SingleCard } from "./__SingleCard";
 
-export function RecipeCards() {
+export function RecipeCards({ recipes }) {
+
+
   return (
     <div className="grid grid-cols-3 gap-4">
-      {[1, 2, 3, 4, 5, 6].map((recipe, idx) => (
-        <SingleCard key={idx} />
+      {recipes?.map((recipe, idx) => (
+        <SingleCard key={recipe.id} recipe={recipe} />
       ))}
     </div>
   );
