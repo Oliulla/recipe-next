@@ -7,6 +7,7 @@ import { __dynamicRecipeCardContentDir } from "@/constants/constants";
 const MyRecipeLists = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +33,7 @@ const MyRecipeLists = ({ user }) => {
     };
 
     fetchData();
-  }, []);
+  }, [isUpdated]);
 
   //   console.log(recipes);
 
@@ -49,6 +50,7 @@ const MyRecipeLists = ({ user }) => {
             <RecipeCards
               recipes={recipes}
               fromWhere={__dynamicRecipeCardContentDir.__MY_RECIPES}
+              setIsUpdated={setIsUpdated}
             />
           </div>
         </>

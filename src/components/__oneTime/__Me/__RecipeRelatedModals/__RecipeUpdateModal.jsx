@@ -6,21 +6,18 @@ import { useEffect, useState } from "react";
 import Editor from "../../__Editor";
 import { LoadingButton } from "@/components/shared/Loader/__LoadingButton";
 
-export default function RecipeUpdateModal({ recipe, dataUri }) {
+export default function RecipeUpdateModal({ recipe, dataUri, setIsUpdated }) {
   const [openModal, setOpenModal] = useState(false);
   const [recipeTitle, setRecipeTitle] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState({});
-
   const [ingredients, setIngredients] = useState([]);
-
   const [instructions, setInstructions] = useState("");
   const [editorValue, setEditorValue] = useState({
     instructions: `${recipe?.instructions}`,
   });
-
   const [selectedFile, setSelectedFile] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitButtonLoading, setIsSubmitButtonLoading] = useState(false);
   const [targetLoadingButton, setTargetLoadingButton] = useState("");
 
   const oldSelectedRecipesArray = recipe?.ingredients?.split(",") || [];
@@ -75,52 +72,60 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
     setSelectedFile(file);
   };
 
-  // Handlers
-  const updateRecipeTitleHandler = async () => {
-    console.log(recipeTitle);
-    setTargetLoadingButton("title");
-    setIsLoading(true);
-    try {
-      const res = await fetch(`localhost:3000/api/recipe/${recipe?.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: {
-          property: "title",
-          value: recipeTitle,
-        },
-      });
-      const data = await res.json();
+  const updateFieldHandler = async (targetedField) => {
+    setTargetLoadingButton(targetedField);
+    setIsSubmitButtonLoading(true);
 
-      console.log(data);
-      // if(data?.data)
+    let value;
+
+    if (targetedField === "title") {
+      value = recipeTitle;
+    } else if (targetedField === "ingredients") {
+      const selectedArr = Object.keys(selectedIngredients).filter(
+        (label) => selectedIngredients[label]
+      );
+
+      if (selectedArr.length === 0) {
+        alert("Select at least one ingredient");
+        return;
+      }
+      value = JSON.stringify(selectedArr);
+    } else if (targetedField === "instructions") {
+      value = instructions;
+    } else if (targetedField === "image") {
+      const formData = new FormData();
+      formData.set("file", selectedFile);
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/recipe/${recipe?.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            property: targetedField,
+            value: value,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      // console.log(data);
+      if (data?.success) {
+        alert(data?.message);
+        setIsUpdated(true);
+        return;
+      }
+      // console.log(data);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setTargetLoadingButton("");
+      setIsSubmitButtonLoading(false);
     }
-  };
-
-  const updateIngredientsHandler = () => {
-    const selectedArr = Object.keys(selectedIngredients).filter(
-      (label) => selectedIngredients[label]
-    );
-
-    if (selectedArr.length === 0) {
-      alert("Select at least one ingredient");
-      return;
-    }
-
-    console.log(selectedArr);
-  };
-
-  const updateInstructionsHandler = () => {
-    console.log(instructions);
-  };
-
-  const updateImageHandler = () => {
-    console.log(selectedFile);
   };
 
   return (
@@ -155,11 +160,12 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                       onChange={(e) => setRecipeTitle(e.target.value)}
                       className="w-full"
                     />
-                    {isLoading && targetLoadingButton === "title" ? (
+                    {isSubmitButtonLoading &&
+                    targetLoadingButton === "title" ? (
                       <LoadingButton />
                     ) : (
                       <button
-                        onClick={() => updateRecipeTitleHandler()}
+                        onClick={() => updateFieldHandler("title")}
                         className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-1/6 text-white"
                       >
                         Save Change
@@ -197,11 +203,12 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                     ))}
                   </div>
                   <div className="text-right">
-                    {isLoading && targetLoadingButton === "checkbox" ? (
+                    {isSubmitButtonLoading &&
+                    targetLoadingButton === "ingredients" ? (
                       <LoadingButton />
                     ) : (
                       <button
-                        onClick={() => updateIngredientsHandler()}
+                        onClick={() => updateFieldHandler("ingredients")}
                         className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-1/6 py-3 px-2 text-white mt-2"
                       >
                         Save Change
@@ -226,11 +233,12 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                       />
                     </div>
                     <div className="">
-                      {isLoading && targetLoadingButton === "instructions" ? (
+                      {isSubmitButtonLoading &&
+                      targetLoadingButton === "instructions" ? (
                         <LoadingButton />
                       ) : (
                         <button
-                          onClick={() => updateInstructionsHandler()}
+                          onClick={() => updateFieldHandler("instructions")}
                           className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
                         >
                           Save Change for Instructions
@@ -254,16 +262,12 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                     <div className="w-full">
                       <Label className="text-black block mb-2">
                         Drop Or Browse To Update Recipe Image{" "}
-                        {/* <span className="text-blue-500 text-xs">
-                          (Optional)
-                        </span> */}
                       </Label>
                       <Label
                         htmlFor="dropzone-file"
                         className="dark:hover:bg-bray-800 flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                       >
                         <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                          {/* Display the selected file name */}
                           {selectedFile && (
                             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                               Selected File: {selectedFile.name}
@@ -290,9 +294,6 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                             </span>{" "}
                             or drag and drop
                           </p>
-                          {/* <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
-                      </p> */}
                         </div>
 
                         <FileInput
@@ -304,11 +305,12 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                     </div>
 
                     <div className="w-1/6 flex items-end h-64">
-                      {isLoading && targetLoadingButton === "image" ? (
+                      {isSubmitButtonLoading &&
+                      targetLoadingButton === "image" ? (
                         <LoadingButton />
                       ) : (
                         <button
-                          onClick={() => updateImageHandler()}
+                          onClick={() => updateFieldHandler("image")}
                           className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
                         >
                           Save Change

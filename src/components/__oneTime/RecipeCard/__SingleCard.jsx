@@ -7,7 +7,7 @@ import { __dynamicRecipeCardContentDir } from "@/constants/constants";
 import RecipeDeleteModal from "../__Me/__RecipeRelatedModals/__RecipeDeleteModal";
 import RecipeUpdateModal from "../__Me/__RecipeRelatedModals/__RecipeUpdateModal";
 
-export function SingleCard({ recipe, fromWhere }) {
+export function SingleCard({ recipe, fromWhere, setIsUpdated }) {
   // Destructure the recipe data
   const { title, image } = recipe;
 
@@ -20,13 +20,25 @@ export function SingleCard({ recipe, fromWhere }) {
       {fromWhere === __dynamicRecipeCardContentDir.__MY_RECIPES ? (
         <>
           <Card className="max-w-sm h-full" imgAlt={title} imgSrc={dataUri}>
-            <div className="flex justify-center gap-x-8">
-              <>
-                <RecipeDeleteModal recipeName={recipe.title} />
-              </>
-              <>
-                <RecipeUpdateModal recipe={recipe} dataUri={dataUri} />
-              </>
+            <div className="">
+              <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                {title}
+              </h5>
+              <div className="flex justify-center gap-x-8 mt-6">
+                <div>
+                  <RecipeDeleteModal
+                    recipeName={recipe.title}
+                    setIsUpdated={setIsUpdated}
+                  />
+                </div>
+                <div>
+                  <RecipeUpdateModal
+                    recipe={recipe}
+                    dataUri={dataUri}
+                    setIsUpdated={setIsUpdated}
+                  />
+                </div>
+              </div>
             </div>
           </Card>
         </>
