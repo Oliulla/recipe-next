@@ -7,7 +7,7 @@ export async function GET(request, { params }) {
 
     const { userId } = params;
 
-    console.log("userid", userId)
+    // console.log("userid", userId)
 
     try {
 

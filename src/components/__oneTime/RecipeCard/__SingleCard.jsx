@@ -25,7 +25,7 @@ export function SingleCard({ recipe, fromWhere }) {
                 <RecipeDeleteModal recipeName={recipe.title} />
               </>
               <>
-                <RecipeUpdateModal recipe={recipe} />
+                <RecipeUpdateModal recipe={recipe} dataUri={dataUri} />
               </>
             </div>
           </Card>

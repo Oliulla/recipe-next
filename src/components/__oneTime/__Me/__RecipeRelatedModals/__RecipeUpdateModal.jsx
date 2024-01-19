@@ -1,18 +1,27 @@
 "use client";
 
-import { Button, Checkbox, Label, Modal } from "flowbite-react";
+import { Button, Checkbox, FileInput, Label, Modal } from "flowbite-react";
 import PageLoader from "next/dist/client/page-loader";
 import { useEffect, useState } from "react";
-// import AddRecipeForm from "../../__AddRecipeForm";
+import Editor from "../../__Editor";
 
-export default function RecipeUpdateModal({ recipe }) {
+export default function RecipeUpdateModal({ recipe, dataUri }) {
   const [openModal, setOpenModal] = useState(false);
-  const [recipeTitle, setRecipeTitle] = useState(recipe?.title);
+  const [recipeTitle, setRecipeTitle] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState({});
 
   const [ingredients, setIngredients] = useState([]);
 
+  const [instructions, setInstructions] = useState("");
+  const [editorValue, setEditorValue] = useState({
+    instructions: `${recipe?.instructions}`,
+  });
+
+  const [selectedFile, setSelectedFile] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const oldSelectedRecipesArray = recipe?.ingredients?.split(",") || [];
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,9 +40,17 @@ export default function RecipeUpdateModal({ recipe }) {
     fetchIngredients();
   }, []);
 
-  const updateRecipeTitleHandler = () => {
-    console.log();
-  };
+  useEffect(() => {
+    if (recipe) {
+      // Initialize selected ingredients based on existing recipe data
+      const initialSelectedIngredients = {};
+      oldSelectedRecipesArray.forEach((label) => {
+        initialSelectedIngredients[label] = true;
+      });
+      setSelectedIngredients(initialSelectedIngredients);
+      setRecipeTitle(recipe?.title || "");
+    }
+  }, []);
 
   const handleCheckboxChange = (label) => {
     setSelectedIngredients((prevSelected) => ({
@@ -42,7 +59,25 @@ export default function RecipeUpdateModal({ recipe }) {
     }));
   };
 
-  //   console.log(selectedIngredients);
+  const handleEditor = (eventKey, e) => {
+    setEditorValue((prevEditorValue) => ({
+      ...prevEditorValue,
+      [eventKey]: e,
+    }));
+    // Assuming instructions are directly updated in the state
+    setInstructions(e);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
+  // Handlers
+  const updateRecipeTitleHandler = () => {
+    console.log(recipeTitle);
+  };
+
   const updateIngredientsHandler = () => {
     const selectedArr = Object.keys(selectedIngredients).filter(
       (label) => selectedIngredients[label]
@@ -56,6 +91,14 @@ export default function RecipeUpdateModal({ recipe }) {
     console.log(selectedArr);
   };
 
+  const updateInstructionsHandler = () => {
+    console.log(instructions);
+  };
+
+  const updateImageHandler = () => {
+    console.log(selectedFile);
+  };
+
   return (
     <>
       <button
@@ -64,7 +107,7 @@ export default function RecipeUpdateModal({ recipe }) {
       >
         Update
       </button>
-      {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
+
       <Modal
         dismissible
         size="full"
@@ -135,9 +178,105 @@ export default function RecipeUpdateModal({ recipe }) {
                   </div>
                 </div>
 
-                <div>instructions</div>
+                <div>
+                  <div className="flex flex-col">
+                    <div className="editor">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="instructions"
+                          value="Recipe Instructions *"
+                          className="text-white"
+                        />
+                      </div>
+                      <Editor
+                        editorValue={editorValue}
+                        handleInputChange={handleEditor}
+                      />
+                    </div>
+                    <div className="">
+                      <button
+                        onClick={() => updateInstructionsHandler()}
+                        className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
+                      >
+                        Save Change for Instructions
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-                <div>image</div>
+                <div>
+                  <div className="flex gap-x-6">
+                    <div className="w-64">
+                      <label>Current Recipe Image</label>
+                      <img
+                        src={dataUri}
+                        alt="Recipe Image"
+                        className="w-64 h-64"
+                      />
+                    </div>
+
+                    <div className="w-full">
+                      <Label className="text-black block mb-2">
+                        Drop Or Browse To Update Recipe Image{" "}
+                        {/* <span className="text-blue-500 text-xs">
+                          (Optional)
+                        </span> */}
+                      </Label>
+                      <Label
+                        htmlFor="dropzone-file"
+                        className="dark:hover:bg-bray-800 flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                      >
+                        <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                          {/* Display the selected file name */}
+                          {selectedFile && (
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                              Selected File: {selectedFile.name}
+                            </p>
+                          )}
+                          <svg
+                            className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 16"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            />
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold">
+                              Click to upload
+                            </span>{" "}
+                            or drag and drop
+                          </p>
+                          {/* <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p> */}
+                        </div>
+
+                        <FileInput
+                          id="dropzone-file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+                      </Label>
+                    </div>
+
+                    <div className="w-1/6 flex items-end h-64">
+                      <button
+                        onClick={() => updateImageHandler()}
+                        className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
+                      >
+                        Save Change
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Modal.Body>
           </>
