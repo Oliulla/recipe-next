@@ -62,7 +62,10 @@ export async function GET(request, { params }) {
 // PUT handler
 export async function PUT(request, { params }) {
     const { id } = params;
-    console.log("recipe id:", id);
+    // console.log("recipe id:", id);
+
+    let property;
+    let value = null;
 
     try {
         const existingRecipe = await prisma.recipe.findUnique({
@@ -76,36 +79,55 @@ export async function PUT(request, { params }) {
         }
 
         const data = await request.formData();
-        let file = data.get('file');
+        // console.log(data)
         const title = data.get('title');
         const instructions = data.get('instructions');
         const ingredients = data.get('ingredients');
+        const file = data.get('file');
 
-        // when file is null then file default BLOB value set when SQLite DB is not migrated properly
-        if (file === null) {
-            file = "default0blob0null0value";
+        if (title) {
+            property = "title";
+            value = title;
+        } else if (ingredients) {
+            property = "ingredients";
+            value = ingredients;
+        } else if (instructions) {
+            property = "instructions";
+            value = instructions;
+        } else if (file) {
+            property = "image";
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            value = buffer;
+        } else {
+            return createApiResponse(400, false, "No valid property to update");
         }
+
+        // Construct an object to update data
+        if (!value) {
+            return createApiResponse(500, false, `${property} couldn't be empty`);
+        }
+        const updatedData = {
+            [property]: value
+        };
 
         // Update the specific properties
         const updatedRecipe = await prisma.recipe.update({
             where: {
                 id: parseInt(id),
             },
-            data: {
-                title: title,
-                instructions: instructions,
-                ingredients: ingredients,
-                // Add other properties as needed
-            },
+            data: updatedData,
         });
 
         return createApiResponse(200, true, "Recipe updated successfully", updatedRecipe);
     } catch (error) {
-        return createApiResponse(400, false, "API error");
+        console.error("Error in PUT handler:", error);
+        return createApiResponse(500, false, "Internal server error");
     } finally {
         await prisma.$disconnect();
     }
 }
+
 
 
 export async function DELETE(request, { params }) {

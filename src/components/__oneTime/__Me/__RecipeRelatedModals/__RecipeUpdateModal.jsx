@@ -76,10 +76,10 @@ export default function RecipeUpdateModal({ recipe, dataUri, setIsUpdated }) {
     setTargetLoadingButton(targetedField);
     setIsSubmitButtonLoading(true);
 
-    let value;
+    const formData = new FormData();
 
     if (targetedField === "title") {
-      value = recipeTitle;
+      formData.set("title", recipeTitle);
     } else if (targetedField === "ingredients") {
       const selectedArr = Object.keys(selectedIngredients).filter(
         (label) => selectedIngredients[label]
@@ -89,12 +89,11 @@ export default function RecipeUpdateModal({ recipe, dataUri, setIsUpdated }) {
         alert("Select at least one ingredient");
         return;
       }
-      value = JSON.stringify(selectedArr);
+      formData.set("ingredients", selectedArr);
     } else if (targetedField === "instructions") {
-      value = instructions;
+      formData.set("instructions", instructions);
     } else if (targetedField === "image") {
-      const formData = new FormData();
-      formData.set("file", selectedFile);
+      formData.append("file", selectedFile);
     }
 
     try {
@@ -102,13 +101,7 @@ export default function RecipeUpdateModal({ recipe, dataUri, setIsUpdated }) {
         `http://localhost:3000/api/recipe/${recipe?.id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            property: targetedField,
-            value: value,
-          }),
+          body: formData,
         }
       );
 
