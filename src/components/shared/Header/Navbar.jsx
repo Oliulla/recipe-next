@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 
 export default function HeaderNav({ user }) {
   const [currentLoginUser, setCurrentLoginUser] = useState(null);
+  const [isNavigatingLoading, setIsNavigateingLoading] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -17,9 +18,11 @@ export default function HeaderNav({ user }) {
   };
 
   const handleRedirectToDashboar = async () => {
+    setIsNavigateingLoading(true);
     if (!user?.email || !user?.name) {
       return;
     }
+    setIsNavigateingLoading(false);
     router.push("/dashboard/me");
   };
 
@@ -40,47 +43,48 @@ export default function HeaderNav({ user }) {
   // console.log(currentLoginUser);
 
   return (
-    <Navbar
-      fluid
-      className="border-b border-gray-600 shadow-lg bg-gray-700 text-white"
-    >
-      <Navbar.Brand as={Link} href="/">
-        <img
-          src="http://localhost:3000/faviconImg.png"
-          className="mr-3 h-6 sm:h-9"
-          alt="RecipeNext Logo"
-        />
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          RecipeNext
-        </span>
-      </Navbar.Brand>
-      <Navbar.Toggle />
-      <Navbar.Collapse>
-        <Navbar.Link
-          className="text-white text-[1rem] mt-2"
-          as={Link}
-          href="/"
-          active={pathname === "/" || pathname === "/home"}
-        >
-          Home
-        </Navbar.Link>
-        <Navbar.Link
-          className="text-white text-[1rem] mt-2"
-          as={Link}
-          href="/all-recipes"
-          active={pathname === "/all-recipes"}
-        >
-          Recipes
-        </Navbar.Link>
-        <Navbar.Link
-          className="text-white text-[1rem] mt-2"
-          as={Link}
-          href="/add-recipes"
-          active={pathname === "/add-recipes"}
-        >
-          Add Recipes
-        </Navbar.Link>
-        {/* <Navbar.Link
+    <>
+      <Navbar
+        fluid
+        className="border-b border-gray-600 shadow-lg bg-gray-700 text-white"
+      >
+        <Navbar.Brand as={Link} href="/">
+          <img
+            src="http://localhost:3000/faviconImg.png"
+            className="mr-3 h-6 sm:h-9"
+            alt="RecipeNext Logo"
+          />
+          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            RecipeNext
+          </span>
+        </Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Navbar.Link
+            className="text-white text-[1rem] mt-2"
+            as={Link}
+            href="/"
+            active={pathname === "/" || pathname === "/home"}
+          >
+            Home
+          </Navbar.Link>
+          <Navbar.Link
+            className="text-white text-[1rem] mt-2"
+            as={Link}
+            href="/all-recipes"
+            active={pathname === "/all-recipes"}
+          >
+            Recipes
+          </Navbar.Link>
+          <Navbar.Link
+            className="text-white text-[1rem] mt-2"
+            as={Link}
+            href="/add-recipes"
+            active={pathname === "/add-recipes"}
+          >
+            Add Recipes
+          </Navbar.Link>
+          {/* <Navbar.Link
           className="text-white text-[1rem] mt-2"
           as={Link}
           href="/login"
@@ -88,32 +92,40 @@ export default function HeaderNav({ user }) {
         >
           Login
         </Navbar.Link> */}
-        {!user?.email ||
-        !user?.name ||
-        !currentLoginUser?.email ||
-        !currentLoginUser?.userName ? (
-          <button
-            type="button"
-            onClick={pushToLoginPageHandler}
-            className="bg-cyan-500 px-3 rounded"
-          >
-            Login
-          </button>
-        ) : (
-          <div
-            onClick={handleRedirectToDashboar}
-            className={`flex items-center gap-x-2 mt-2 ml-2 cursor-pointer`}
-          >
-            {/* <button onClick={() => signOut()}>Sign out</button> */}
-            <button className="flex lg:hidden">Profile</button>
-            <img
-              src={user?.image}
-              className="h-10 w-10 rounded-full border-gray-800"
-            />
-          </div>
-        )}
+          {!user?.email ||
+          !user?.name ||
+          !currentLoginUser?.email ||
+          !currentLoginUser?.userName ? (
+            <button
+              type="button"
+              onClick={pushToLoginPageHandler}
+              className="bg-cyan-500 px-3 rounded"
+            >
+              Login
+            </button>
+          ) : (
+            <div>
+              {isNavigatingLoading ? (
+                <Spinner aria-label="Extra large spinner example" size="xl" />
+              ) : (
+                <>
+                  <div
+                    onClick={handleRedirectToDashboar}
+                    className={`flex items-center gap-x-2 mt-2 ml-2 cursor-pointer`}
+                  >
+                    {/* <button onClick={() => signOut()}>Sign out</button> */}
+                    <button className="flex lg:hidden">Profile</button>
+                    <img
+                      src={user?.image}
+                      className="h-10 w-10 rounded-full border-gray-800"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          )}
 
-        {/* <Navbar.Link
+          {/* <Navbar.Link
           className="text-white text-[1rem]"
           as={Link}
           href="/blogs"
@@ -121,7 +133,8 @@ export default function HeaderNav({ user }) {
         >
           Blogs
         </Navbar.Link> */}
-      </Navbar.Collapse>
-    </Navbar>
+        </Navbar.Collapse>
+      </Navbar>
+    </>
   );
 }
