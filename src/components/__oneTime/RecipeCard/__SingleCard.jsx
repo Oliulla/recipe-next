@@ -27,7 +27,8 @@ export function SingleCard({ recipe, fromWhere, setIsUpdated }) {
               <div className="flex justify-center gap-x-8 mt-6">
                 <div>
                   <RecipeDeleteModal
-                    recipeName={recipe.title}
+                    recipeName={recipe?.title}
+                    id={recipe?.id}
                     setIsUpdated={setIsUpdated}
                   />
                 </div>

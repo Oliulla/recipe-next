@@ -1,11 +1,36 @@
 "use client";
 
 import { Button, Modal } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-export default function RecipeDeleteModal({ recipeName }) {
+export default function RecipeDeleteModal({ recipeName, id, setIsUpdated }) {
   const [openModal, setOpenModal] = useState(false);
+
+  const handleDeleteRecipe = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/recipe/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      // console.log(data);
+
+      if (data?.success) {
+        setOpenModal(false);
+        alert(data?.message);
+        setIsUpdated(true);
+        return;
+      }
+    } catch (error) {
+      if (error) {
+        alert(data?.message);
+        return;
+      }
+    }
+  };
 
   return (
     <>
@@ -28,10 +53,12 @@ export default function RecipeDeleteModal({ recipeName }) {
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
               Are you sure to delete recipe:{" "}
-              <span className="text-violet-900 font-semibold">{recipeName}</span>
+              <span className="text-violet-900 font-semibold">
+                {recipeName}
+              </span>
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={() => setOpenModal(false)}>
+              <Button color="failure" onClick={handleDeleteRecipe}>
                 {"Yes, I'm sure"}
               </Button>
               <Button color="gray" onClick={() => setOpenModal(false)}>
