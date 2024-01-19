@@ -4,6 +4,7 @@ import { Button, Checkbox, FileInput, Label, Modal } from "flowbite-react";
 import PageLoader from "next/dist/client/page-loader";
 import { useEffect, useState } from "react";
 import Editor from "../../__Editor";
+import { LoadingButton } from "@/components/shared/Loader/__LoadingButton";
 
 export default function RecipeUpdateModal({ recipe, dataUri }) {
   const [openModal, setOpenModal] = useState(false);
@@ -20,6 +21,7 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
   const [selectedFile, setSelectedFile] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [targetLoadingButton, setTargetLoadingButton] = useState("");
 
   const oldSelectedRecipesArray = recipe?.ingredients?.split(",") || [];
 
@@ -74,8 +76,30 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
   };
 
   // Handlers
-  const updateRecipeTitleHandler = () => {
+  const updateRecipeTitleHandler = async () => {
     console.log(recipeTitle);
+    setTargetLoadingButton("title");
+    setIsLoading(true);
+    try {
+      const res = await fetch(`localhost:3000/api/recipe/${recipe?.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          property: "title",
+          value: recipeTitle,
+        },
+      });
+      const data = await res.json();
+
+      console.log(data);
+      // if(data?.data)
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updateIngredientsHandler = () => {
@@ -131,12 +155,16 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                       onChange={(e) => setRecipeTitle(e.target.value)}
                       className="w-full"
                     />
-                    <button
-                      onClick={() => updateRecipeTitleHandler()}
-                      className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-1/6 text-white"
-                    >
-                      Save Change
-                    </button>
+                    {isLoading && targetLoadingButton === "title" ? (
+                      <LoadingButton />
+                    ) : (
+                      <button
+                        onClick={() => updateRecipeTitleHandler()}
+                        className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-1/6 text-white"
+                      >
+                        Save Change
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -169,12 +197,16 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                     ))}
                   </div>
                   <div className="text-right">
-                    <button
-                      onClick={() => updateIngredientsHandler()}
-                      className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-1/6 py-3 px-2 text-white mt-2"
-                    >
-                      Save Change
-                    </button>
+                    {isLoading && targetLoadingButton === "checkbox" ? (
+                      <LoadingButton />
+                    ) : (
+                      <button
+                        onClick={() => updateIngredientsHandler()}
+                        className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-1/6 py-3 px-2 text-white mt-2"
+                      >
+                        Save Change
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -194,12 +226,16 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                       />
                     </div>
                     <div className="">
-                      <button
-                        onClick={() => updateInstructionsHandler()}
-                        className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
-                      >
-                        Save Change for Instructions
-                      </button>
+                      {isLoading && targetLoadingButton === "instructions" ? (
+                        <LoadingButton />
+                      ) : (
+                        <button
+                          onClick={() => updateInstructionsHandler()}
+                          className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
+                        >
+                          Save Change for Instructions
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -268,12 +304,16 @@ export default function RecipeUpdateModal({ recipe, dataUri }) {
                     </div>
 
                     <div className="w-1/6 flex items-end h-64">
-                      <button
-                        onClick={() => updateImageHandler()}
-                        className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
-                      >
-                        Save Change
-                      </button>
+                      {isLoading && targetLoadingButton === "image" ? (
+                        <LoadingButton />
+                      ) : (
+                        <button
+                          onClick={() => updateImageHandler()}
+                          className="bg-indigo-900 hover:bg-indigo-950 rounded-md w-full py-3 px-2 text-white -mb-8"
+                        >
+                          Save Change
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

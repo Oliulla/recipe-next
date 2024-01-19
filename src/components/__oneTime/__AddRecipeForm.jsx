@@ -1,18 +1,26 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FloatingLabel, Checkbox, Label, FileInput } from "flowbite-react";
+import {
+  FloatingLabel,
+  Checkbox,
+  Label,
+  FileInput,
+  Button,
+  Spinner,
+} from "flowbite-react";
 import Editor from "./__Editor";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const AddRecipeForm = ({ user }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isFormSubmissionLoading, setIsFormSubmissionLoading] = useState(false);
   const [ingredients, setIngredients] = useState([]);
 
   const [recipeTitle, setRecipeTitle] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState({});
-  
+
   const [instructions, setInstructions] = useState("");
   const [editorValue, setEditorValue] = useState({
     instructions: "",
@@ -78,6 +86,7 @@ const AddRecipeForm = ({ user }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    setIsFormSubmissionLoading(true);
     const selectedArr = Object.keys(selectedIngredients).filter(
       (label) => selectedIngredients[label]
     );
@@ -125,6 +134,8 @@ const AddRecipeForm = ({ user }) => {
       // toast("Ann error occured!");
       alert("Something went wrong to post recipe! Try again later!");
       console.log(error);
+    } finally {
+      setIsFormSubmissionLoading(false);
     }
   };
 
@@ -237,12 +248,23 @@ const AddRecipeForm = ({ user }) => {
                   </Label>
                 </div>
               </>
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
-              >
-                Submit
-              </button>
+              {isFormSubmissionLoading ? (
+                <Button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                  disabled
+                >
+                  <Spinner aria-label="Spinner button example" size="sm" />
+                  <span className="pl-3">Submitting...</span>
+                </Button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                >
+                  Submit
+                </button>
+              )}
             </div>
           </form>
         </div>
