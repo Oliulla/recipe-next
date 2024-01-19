@@ -20,4 +20,6 @@ npm run dev
 ## Functionality & Project Use Instructions:
 * To get input Recipe instructions, I used an text Editor so that users can customise them instructions text(NPM -- react-quill)
 
-* 
+* To Do Add, Update Or Delete the recipe you have to must authenticated. Then You can click on your rounded picture in Navbar to go Dashboard
+
+* To perform Update and Delete on the recipe, you have to navigate to the /dashboard or /dashboard/me or /dashboard/my-recipes .
