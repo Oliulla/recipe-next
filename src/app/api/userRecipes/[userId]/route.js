@@ -14,7 +14,11 @@ export async function GET(request, { params }) {
         const recipes = await prisma.recipe.findMany({
             where: {
                 userId: parseInt(userId)
-            }
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+            take: 6,
         });
 
         result = {

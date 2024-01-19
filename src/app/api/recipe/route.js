@@ -158,7 +158,6 @@ export async function GET(request) {
             // If latestSixRecipe is true, return the last six recipes
             const latestRecipes = await prisma.recipe.findMany({
                 orderBy: {
-                    // Assuming there's a 'createdAt' field in your Recipe model
                     createdAt: 'desc',
                 },
                 take: 6,
