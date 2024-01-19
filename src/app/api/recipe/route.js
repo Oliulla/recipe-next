@@ -69,6 +69,57 @@ export async function POST(request) {
 
 }
 
+// export async function GET(request) {
+//     let result = [];
+//     let statusCode = 200;
+
+//     try {
+//         const search = request.nextUrl.searchParams.get('search');
+//         let recipes = await prisma.recipe.findMany();
+
+//         // Searching by title or ingredients
+//         if (search) {
+//             const searchTerm = search.toLowerCase();
+//             recipes = recipes.filter(
+//                 (recipe) =>
+//                     recipe.title.toLowerCase().includes(searchTerm) ||
+//                     recipe.ingredients.toLowerCase().includes(searchTerm)
+//             );
+//         }
+
+//         let responseData = {
+//             statusCode: statusCode,
+//             message: "Recipes",
+//             data: recipes,
+//         };
+
+//         const latestSixRecipe = request.nextUrl.searchParams.get("latestSixRecipe");
+
+//         if (latestSixRecipe && latestSixRecipe.toLowerCase() === "true") {
+//             // If latestSixRecipe is true, return the last six recipes
+//             const latestRecipes = await prisma.recipe.findMany({
+//                 orderBy: {
+//                     // Assuming there's a 'createdAt' field in your Recipe model
+//                     createdAt: 'desc',
+//                 },
+//                 take: 6,
+//             });
+
+//             responseData.data = latestRecipes;
+//         }
+
+//         result = responseData;
+//     } catch (error) {
+//         statusCode = 400;
+//         result = {
+//             statusCode: statusCode,
+//             message: "API error",
+//         };
+//     } finally {
+//         await prisma.$disconnect();
+//         return NextResponse.json(result, { status: statusCode });
+//     }
+// }
 
 export async function GET(request) {
     let result = [];
@@ -76,18 +127,23 @@ export async function GET(request) {
 
     try {
         const search = request.nextUrl.searchParams.get('search');
-        // console.log(search)
+        let recipes;
 
-        let recipes = await prisma.recipe.findMany();
-
-        // Searching by title or ingredients
         if (search) {
             const searchTerm = search.toLowerCase();
-            recipes = recipes.filter(
-                (recipe) =>
-                    recipe.title.toLowerCase().includes(searchTerm) ||
-                    recipe.ingredients.toLowerCase().includes(searchTerm)
-            );
+
+            // Use Prisma query for search
+            recipes = await prisma.recipe.findMany({
+                where: {
+                    OR: [
+                        { title: { contains: searchTerm } },
+                        { ingredients: { contains: searchTerm } },
+                    ],
+                },
+            });
+        } else {
+            // Fetch all recipes if no search term is provided
+            recipes = await prisma.recipe.findMany();
         }
 
         let responseData = {
@@ -100,7 +156,15 @@ export async function GET(request) {
 
         if (latestSixRecipe && latestSixRecipe.toLowerCase() === "true") {
             // If latestSixRecipe is true, return the last six recipes
-            responseData.data = recipes.slice(-6);
+            const latestRecipes = await prisma.recipe.findMany({
+                orderBy: {
+                    // Assuming there's a 'createdAt' field in your Recipe model
+                    createdAt: 'desc',
+                },
+                take: 6,
+            });
+
+            responseData.data = latestRecipes;
         }
 
         result = responseData;
@@ -115,4 +179,3 @@ export async function GET(request) {
         return NextResponse.json(result, { status: statusCode });
     }
 }
-
